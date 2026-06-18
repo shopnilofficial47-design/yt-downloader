@@ -1,39 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Video Downloader</title>
+    <title>প্রো ভিডিও ডাউনলোডার</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-        h1 { color: #ff0000; }
-        input { padding: 12px; width: 90%; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-        button { padding: 12px 25px; background-color: #ff0000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+        h1 { color: #ff0000; margin-bottom: 10px; font-size: 28px; }
+        p { color: #666; margin-bottom: 25px; }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: #ff0000; }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
         button:hover { background-color: #cc0000; }
-        #downloadArea { margin-top: 25px; }
-        iframe { border: none; width: 100%; height: 250px; }
+        .loader {
+            display: none;
+            margin-top: 15px;
+            color: #ff0000;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>YT Downloader</h1>
-        <p>ইউটিউব ভিডিওর লিংক নিচে পেস্ট করুন:</p>
+    <div class="card">
+        <h1>YouTube Downloader</h1>
+        <p>যেকোনো ইউটিউব ভিডিওর লিংক পেস্ট করুন</p>
+        
         <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
-        <br>
-        <button onclick="downloadVideo()">Download Now</button>
-
-        <!-- এখানে ডাউনলোডের বাটনটি আসবে -->
-        <div id="downloadArea"></div>
+        <button id="downloadBtn" onclick="processVideo()">Download Video</button>
+        
+        <div class="loader" id="loadingText">ভিডিও প্রসেস হচ্ছে, অপেক্ষা করুন...</div>
     </div>
 
     <script>
-        function downloadVideo() {
+        function processVideo() {
             var url = document.getElementById("videoUrl").value.trim();
             var videoId = "";
+            var btn = document.getElementById("downloadBtn");
+            var loader = document.getElementById("loadingText");
 
-            // লিংক থেকে ভিডিওর মূল ID বের করার কোড
+            // লিংক থেকে ভিডিও আইডি বের করা
             if (url.includes("youtu.be/")) {
                 videoId = url.split("youtu.be/")[1].split("?")[0];
             } else if (url.includes("watch?v=")) {
@@ -42,9 +86,23 @@
                 videoId = url.split("shorts/")[1].split("?")[0];
             }
 
-            // যদি ID পাওয়া যায়, তাহলে নতুন API কল হবে
             if(videoId !== "") {
-                document.getElementById("downloadArea").innerHTML = '<iframe src="https://www.yt-download.org/api/widget/videos/' + videoId + '"></iframe>';
+                // বাটন হাইড করে লোডিং দেখানো
+                btn.style.display = "none";
+                loader.style.display = "block";
+
+                // ২ সেকেন্ড পর ডাউনলোডের লিংকে নিয়ে যাওয়া
+                setTimeout(function() {
+                    window.location.href = "https://www.y2mate.com/youtube/" + videoId;
+                    
+                    // আগের অবস্থায় ফিরিয়ে আনা
+                    setTimeout(function() {
+                        btn.style.display = "block";
+                        loader.style.display = "none";
+                        document.getElementById("videoUrl").value = "";
+                    }, 2000);
+                }, 1500);
+
             } else {
                 alert("দয়া করে একটি সঠিক ইউটিউব লিংক দিন!");
             }
