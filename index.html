@@ -5,57 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>প্রো ভিডিও ডাউনলোডার</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 450px;
-        }
-        h1 { color: #ff0000; margin-bottom: 10px; font-size: 28px; }
-        p { color: #666; margin-bottom: 25px; }
-        input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-            transition: 0.3s;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; width: 100%; max-width: 500px; }
+        h1 { color: #ff0000; margin-bottom: 10px; font-size: 26px; }
+        p { color: #666; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #eee; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s; }
         input:focus { border-color: #ff0000; }
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        button { width: 100%; padding: 12px; background-color: #ff0000; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         button:hover { background-color: #cc0000; }
-        .loader {
-            display: none;
-            margin-top: 15px;
-            color: #ff0000;
-            font-weight: bold;
-        }
+        .loader { display: none; margin-top: 15px; color: #ff0000; font-weight: bold; }
+        
+        /* নতুন যোগ করা ডিজাইন */
+        #result { margin-top: 25px; display: none; text-align: left; background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; }
+        .video-info { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
+        .video-info img { width: 100%; max-width: 320px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .video-info h3 { font-size: 16px; margin: 0; text-align: center; color: #333; line-height: 1.4; }
+        .download-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .dl-btn { display: inline-block; background: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold; transition: 0.3s; }
+        .dl-btn:hover { background: #218838; transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -65,47 +32,62 @@
         <p>যেকোনো ইউটিউব ভিডিওর লিংক পেস্ট করুন</p>
         
         <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
-        <button id="downloadBtn" onclick="processVideo()">Download Video</button>
+        <button id="downloadBtn" onclick="processVideo()">Get Video Links</button>
         
-        <div class="loader" id="loadingText">ভিডিও প্রসেস হচ্ছে, অপেক্ষা করুন...</div>
+        <div class="loader" id="loadingText">সার্ভারে ভিডিও খোঁজা হচ্ছে, একটু অপেক্ষা করুন...</div>
+        
+        <div id="result"></div>
     </div>
 
     <script>
-        function processVideo() {
+        async function processVideo() {
             var url = document.getElementById("videoUrl").value.trim();
-            var videoId = "";
             var btn = document.getElementById("downloadBtn");
             var loader = document.getElementById("loadingText");
+            var resultDiv = document.getElementById("result");
 
-            // লিংক থেকে ভিডিও আইডি বের করা
-            if (url.includes("youtu.be/")) {
-                videoId = url.split("youtu.be/")[1].split("?")[0];
-            } else if (url.includes("watch?v=")) {
-                videoId = url.split("watch?v=")[1].split("&")[0];
-            } else if (url.includes("shorts/")) {
-                videoId = url.split("shorts/")[1].split("?")[0];
-            }
-
-            if(videoId !== "") {
-                // বাটন হাইড করে লোডিং দেখানো
-                btn.style.display = "none";
-                loader.style.display = "block";
-
-                // ২ সেকেন্ড পর ডাউনলোডের লিংকে নিয়ে যাওয়া
-                setTimeout(function() {
-                    window.location.href = "https://www.y2mate.com/youtube/" + videoId;
-                    
-                    // আগের অবস্থায় ফিরিয়ে আনা
-                    setTimeout(function() {
-                        btn.style.display = "block";
-                        loader.style.display = "none";
-                        document.getElementById("videoUrl").value = "";
-                    }, 2000);
-                }, 1500);
-
-            } else {
+            if(url === "") {
                 alert("দয়া করে একটি সঠিক ইউটিউব লিংক দিন!");
+                return;
             }
+
+            // বাটনের কাজ বন্ধ করে লোডিং দেখানো
+            btn.style.display = "none";
+            loader.style.display = "block";
+            resultDiv.style.display = "none";
+            resultDiv.innerHTML = "";
+
+            try {
+                // আমাদের তৈরি করা নিজস্ব সার্ভারে (API) লিংক পাঠানো
+                let response = await fetch('/api/get-video?url=' + encodeURIComponent(url));
+                let data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    // সার্ভার থেকে ডাটা এলে সেটা সাজিয়ে স্ক্রিনে দেখানো
+                    let html = '<div class="video-info">';
+                    html += '<img src="' + data.thumbnail + '" alt="Thumbnail">';
+                    html += '<h3>' + data.title + '</h3>';
+                    html += '</div><h4 style="text-align:center; margin-bottom:15px; color:#555;">সরাসরি ডাউনলোড করুন:</h4>';
+                    html += '<div class="download-buttons">';
+                    
+                    // যতগুলো কোয়ালিটি আছে, ততগুলো বাটন তৈরি হবে
+                    data.links.forEach(link => {
+                        html += '<a href="' + link.url + '&title=' + encodeURIComponent(data.title) + '" class="dl-btn" target="_blank">Download ' + link.quality + '</a>';
+                    });
+                    
+                    html += '</div>';
+                    resultDiv.innerHTML = html;
+                    resultDiv.style.display = "block";
+                }
+            } catch (error) {
+                alert("সার্ভারে কোনো সমস্যা হয়েছে! দয়া করে কিছুক্ষণ পর আবার চেষ্টা করুন।");
+            }
+
+            // লোডিং শেষ করে বাটন ফিরিয়ে আনা
+            btn.style.display = "block";
+            loader.style.display = "none";
         }
     </script>
 
