@@ -1,1 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Downloader</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
+        h1 { color: #ff0000; }
+        input { padding: 12px; width: 90%; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { padding: 12px 25px; background-color: #ff0000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #cc0000; }
+        iframe { margin-top: 25px; border: none; width: 100%; height: 60px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>YT Downloader</h1>
+        <p>ইউটিউব ভিডিওর লিংক নিচে পেস্ট করুন:</p>
+        <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+        <br>
+        <button onclick="downloadVideo()">Download Now</button>
+
+        <!-- এখানে ডাউনলোডের বাটনটি আসবে -->
+        <div id="downloadArea"></div>
+    </div>
+
+    <script>
+        function downloadVideo() {
+            var url = document.getElementById("videoUrl").value;
+            if(url !== "") {
+                // আমরা একটি থার্ড-পার্টি API (loader.to) ব্যবহার করছি
+                document.getElementById("downloadArea").innerHTML = '<iframe src="https://loader.to/api/button/?url=' + url + '&f=mp4"></iframe>';
+            } else {
+                alert("দয়া করে একটি সঠিক ইউটিউব লিংক দিন!");
+            }
+        }
+    </script>
+
+</body>
+</html>
 
